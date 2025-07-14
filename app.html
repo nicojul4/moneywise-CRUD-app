@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyWise - Lacak Pengeluaran Anda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+    <div class="container mx-auto max-w-2xl p-4 sm:p-8">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-indigo-600">MoneyWise</h1>
+                <p class="text-gray-500 mt-1">Selamat datang, <span id="welcome-username"
+                        class="font-semibold">Pengguna</span>!</p>
+            </div>
+            <button id="logout-btn"
+                class="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">Logout</button>
+        </header>
+
+        <main class="space-y-8">
+            <section id="summary-section" class="space-y-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg text-center max-w-sm mx-auto">
+                    <h2 class="text-lg font-semibold text-gray-500 mb-2">Total Pengeluaran (Sesuai Filter)</h2>
+                    <p id="total-expenses" class="text-4xl font-bold text-gray-800">Rp 0</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2 text-center">Analisis Kategori</h2>
+                    <div id="chart-container" class="min-h-[320px]"></div>
+                </div>
+            </section>
+
+            <section id="form-section" class="bg-white p-6 rounded-xl shadow-lg">
+                <h2 id="form-title" class="text-2xl font-semibold text-gray-800 mb-4">Tambahkan Pengeluaran Baru</h2>
+                <form id="expense-form" class="space-y-4">
+                    <input type="hidden" id="expense-id">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="title-input" class="block text-sm font-medium text-gray-700 mb-1">Judul</label>
+                            <input type="text" id="title-input" placeholder="Contoh: Makan siang" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label for="amount-input" class="block text-sm font-medium text-gray-700 mb-1">Jumlah
+                                (Rp)</label>
+                            <input type="number" id="amount-input" placeholder="Contoh: 25000" required min="0"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="date-input" class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+                        <input type="date" id="date-input" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div class="text-right space-x-2">
+                        <button type="button" id="cancel-edit-btn"
+                            class="hidden py-2 px-6 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">Batal</button>
+                        <button type="submit" id="submit-btn"
+                            class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">Tambah</button>
+                    </div>
+                </form>
+            </section>
+
+            <section id="history-section" class="bg-white p-6 rounded-xl shadow-lg">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                    <h2 class="text-2xl font-semibold text-gray-800">Riwayat Pengeluaran</h2>
+                    <div id="time-filters"
+                        class="flex items-center border border-gray-200 rounded-lg p-1 space-x-1 bg-gray-50">
+                        <button data-filter="month" class="time-filter-btn">Bulan Ini</button>
+                        <button data-filter="week" class="time-filter-btn">Minggu Ini</button>
+                        <button data-filter="all" class="time-filter-btn active-filter">Semua</button>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="filter-category" class="sr-only">Filter by category</label>
+                    <select id="filter-category"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="all">Semua Kategori</option>
+                    </select>
+                </div>
+                <ul id="expense-list" class="space-y-2"></ul>
+            </section>
+
+            <section id="account-management-section" class="bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Manajemen Akun</h2>
+                <form id="change-password-form" class="space-y-4 border-b border-gray-200 pb-6 mb-6">
+                    <h3 class="text-lg font-medium text-gray-700">Ubah Password</h3>
+                    <div>
+                        <label for="old-password-input" class="block text-sm font-medium text-gray-700 mb-1">Password
+                            Lama</label>
+                        <input type="password" id="old-password-input" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="new-password-input" class="block text-sm font-medium text-gray-700 mb-1">Password
+                            Baru</label>
+                        <input type="password" id="new-password-input" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="confirm-new-password-input"
+                            class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password Baru</label>
+                        <input type="password" id="confirm-new-password-input" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <p id="password-message" class="text-sm h-4"></p>
+                    <div class="text-right">
+                        <button type="submit"
+                            class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Ubah
+                            Password</button>
+                    </div>
+                </form>
+                <div>
+                    <h3 class="text-lg font-medium text-gray-700">Warning!</h3>
+                    <div class="flex justify-between items-center mt-2">
+                        <p class="text-sm text-gray-500">Tindakan ini tidak bisa dibatalkan.</p>
+                        <button id="delete-account-btn"
+                            class="py-2 px-4 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100">Hapus
+                            Akun Saya</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/script.js" defer></script>
+</body>
+
+</html>
