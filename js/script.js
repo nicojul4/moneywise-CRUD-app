@@ -137,21 +137,51 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   // --- 4. FUNGSI RENDER ---
+  // Update the getFilteredExpenses function
   const getFilteredExpenses = () => {
     const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    // Get the first and last day of current month
+    const startOfMonth = new Date(currentYear, currentMonth, 1);
+    const endOfMonth = new Date(currentYear, currentMonth + 1, 0);
+
+    // Get the first and last day of current week (Sunday to Saturday)
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay());
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const firstDayOfWeek = new Date(today);
+    firstDayOfWeek.setDate(today.getDate() - today.getDay());
+    const lastDayOfWeek = new Date(firstDayOfWeek);
+    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+
     return expenses.filter((expense) => {
       const expenseDate = new Date(expense.date);
-      const timeCondition =
-        activeTimeFilter === "all" ||
-        (activeTimeFilter === "week" && expenseDate >= startOfWeek) ||
-        (activeTimeFilter === "month" && expenseDate >= startOfMonth);
+
+      // Time filter conditions
+      let timeCondition = true;
+
+      switch (activeTimeFilter) {
+        case "month":
+          timeCondition =
+            expenseDate >= startOfMonth && expenseDate <= endOfMonth;
+          break;
+        case "week":
+          timeCondition =
+            expenseDate >= firstDayOfWeek && expenseDate <= lastDayOfWeek;
+          break;
+        case "year":
+          timeCondition = expenseDate.getFullYear() === currentYear;
+          break;
+        case "all":
+          timeCondition = true;
+          break;
+      }
+
+      // Category filter condition (unchanged)
       const categoryCondition =
         activeCategoryFilter === "all" ||
         expense.category === activeCategoryFilter;
+
       return timeCondition && categoryCondition;
     });
   };
@@ -395,4 +425,28 @@ window.addEventListener("DOMContentLoaded", () => {
   welcomeUsernameEl.textContent = loggedInUser;
   setDefaultDate();
   renderAllAndUpdateFilters(); // Panggil versi lengkap saat pertama kali load
+});
+
+/* For Toggle */
+document.addEventListener("DOMContentLoaded", () => {
+  const themeToggle = document.getElementById("theme-toggle");
+  const html = document.documentElement;
+
+  // Load theme from localStorage
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    html.classList.add("dark");
+    themeToggle.checked = true;
+  }
+
+  // Toggle theme
+  themeToggle.addEventListener("change", () => {
+    if (themeToggle.checked) {
+      html.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      html.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  });
 });

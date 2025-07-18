@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="transition-colors duration-200">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MoneyWise - Lacak Pengeluaran Anda</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
@@ -13,15 +13,25 @@
 
 <body class="bg-gray-100 font-sans">
 
-    <div class="container mx-auto max-w-2xl p-4 sm:p-8">
-        <header class="flex justify-between items-center mb-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div>
-                <h1 class="text-3xl font-bold text-indigo-600">MoneyWise</h1>
-                <p class="text-gray-500 mt-1">Selamat datang, <span id="welcome-username"
-                        class="font-semibold">Pengguna</span>!</p>
+                <h1 class="text-2xl sm:text-3xl font-bold text-indigo-600">MoneyWise</h1>
+                <p class="text-sm sm:text-base text-gray-500 mt-1">Selamat datang di MoneyWise, <span
+                        id="welcome-username" class="font-semibold">Pengguna</span>!</p>
             </div>
-            <button id="logout-btn"
-                class="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">Logout</button>
+            <div class="flex flex-wrap items-center gap-2 sm:gap-4">
+                <!-- Theme Toggle Switch -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="theme-toggle" class="sr-only peer">
+                    <div
+                        class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600">
+                    </div>
+                    <span class="ml-2 text-sm font-medium text-gray-900 dark:text-white">🌙</span>
+                </label>
+                <button id="logout-btn"
+                    class="w-full sm:w-auto py-2 px-4 text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">Logout</button>
+            </div>
         </header>
 
         <main class="space-y-8">
@@ -32,7 +42,7 @@
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-lg">
                     <h2 class="text-xl font-semibold text-gray-800 mb-2 text-center">Analisis Kategori</h2>
-                    <div id="chart-container" class="min-h-[320px]"></div>
+                    <div id="chart-container" class="min-h-[200px] sm:min-h-[320px] w-full"></div>
                 </div>
             </section>
 
@@ -70,11 +80,15 @@
             <section id="history-section" class="bg-white p-6 rounded-xl shadow-lg">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
                     <h2 class="text-2xl font-semibold text-gray-800">Riwayat Pengeluaran</h2>
-                    <div id="time-filters"
-                        class="flex items-center border border-gray-200 rounded-lg p-1 space-x-1 bg-gray-50">
-                        <button data-filter="month" class="time-filter-btn">Bulan Ini</button>
-                        <button data-filter="week" class="time-filter-btn">Minggu Ini</button>
-                        <button data-filter="all" class="time-filter-btn active-filter">Semua</button>
+                    <div id="time-filters" class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                        <button data-filter="year" class="time-filter-btn flex-1 sm:flex-none text-sm py-2 px-3">Tahun
+                            Ini</button>
+                        <button data-filter="month" class="time-filter-btn flex-1 sm:flex-none text-sm py-2 px-3">Bulan
+                            Ini</button>
+                        <button data-filter="week" class="time-filter-btn flex-1 sm:flex-none text-sm py-2 px-3">Minggu
+                            Ini</button>
+                        <button data-filter="all"
+                            class="time-filter-btn flex-1 sm:flex-none text-sm py-2 px-3 active-filter">Semua</button>
                     </div>
                 </div>
                 <div class="mb-4">
@@ -119,7 +133,8 @@
                 <div>
                     <h3 class="text-lg font-medium text-gray-700">Warning!</h3>
                     <div class="flex justify-between items-center mt-2">
-                        <p class="text-sm text-gray-500">Tindakan ini tidak bisa dibatalkan.</p>
+                        <p class="text-sm text-gray-500">Tindakan ini tidak bisa dibatalkan. Jika anda benar "YAKIN!"
+                            Silahkan menghapus akun anda.</p>
                         <button id="delete-account-btn"
                             class="py-2 px-4 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100">Hapus
                             Akun Saya</button>
