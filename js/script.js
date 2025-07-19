@@ -31,7 +31,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const deleteAccountBtn = document.getElementById("delete-account-btn");
 
   // --- 2. STATE MANAGEMENT ---
-  const usersKey = "rupiahwise_users";
+  const usersKey = "moneywise_users";
   const userExpensesKey = `expenses_${loggedInUser}`;
   let expenses = JSON.parse(localStorage.getItem(userExpensesKey)) || [];
   let chart = null;

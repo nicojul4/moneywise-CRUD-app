@@ -12,7 +12,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     let users = [];
     try {
-      const usersJSON = localStorage.getItem("rupiahwise_users");
+      const usersJSON = localStorage.getItem("moneywise_users");
       users = usersJSON ? JSON.parse(usersJSON) : [];
     } catch (e) {
       users = [];
