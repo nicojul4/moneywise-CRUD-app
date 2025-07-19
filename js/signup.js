@@ -8,12 +8,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const errorMessage = document.getElementById("error-message");
 
   const getUsers = () => {
-    const usersJSON = localStorage.getItem("rupiahwise_users");
+    const usersJSON = localStorage.getItem("moneywise_users");
     return usersJSON ? JSON.parse(usersJSON) : [];
   };
 
   const saveUsers = (users) => {
-    localStorage.setItem("rupiahwise_users", JSON.stringify(users));
+    localStorage.setItem("moneywise_users", JSON.stringify(users));
   };
 
   signupForm.addEventListener("submit", (e) => {
